@@ -1,4 +1,5 @@
 require_relative('../db/sql_runner')
+require_relative('../models/star')
 
 class Movie
     attr_reader :id
@@ -16,7 +17,8 @@ class Movie
             RETURNING id"
         values = [@title, @genre]
         result = SqlRunner.run(sql, values)
-        return result[0]["id"].to_i
+        @id = result[0]["id"].to_i
+        return @id
     end
 
     def delete()
@@ -38,5 +40,15 @@ class Movie
 
     def Movie.map_items(array)
         return array.map{ |options| Movie.new(options) }
+    end
+
+    def stars
+        sql = "SELECT stars.* FROM stars 
+                INNER JOIN castings
+                ON castings.star_id = stars.id
+                WHERE castings.movie_id = $1"
+        values = [@id]
+        movies = SqlRunner.run(sql, values)
+        return Star.map_items(movies)
     end
 end

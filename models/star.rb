@@ -1,4 +1,7 @@
- class Star
+require_relative('../db/sql_runner')
+require_relative('../models/movie')
+
+class Star
     attr_accessor :first_name, :last_name
     
         def initialize( options )
@@ -43,4 +46,14 @@
         def Star.map_items(array)
             return array.map{ |options| Star.new(options) }
         end
- end
+
+        def movies
+            sql = "SELECT movies.* FROM movies 
+                    INNER JOIN castings
+                    ON castings.movie_id = movies.id
+                    WHERE castings.star_id = $1"
+            values = [@id]
+            result = SqlRunner.run(sql, values)
+            return Movie.map_items(result)
+        end
+end

@@ -89,6 +89,7 @@ Casting.new({
     "fee" => 4
 }).save
 
+puts Casting.all
 
 binding.pry
 nil
