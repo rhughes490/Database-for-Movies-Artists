@@ -1,0 +1,3 @@
+class Casting
+
+end
